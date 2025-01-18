@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Container, Spinner } from "react-bootstrap";
 
 const StarsLog = ({ studentId = null }) => {
   const [logs, setLogs] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchLogs = async () => {
     try {
@@ -24,7 +25,9 @@ const StarsLog = ({ studentId = null }) => {
         setError("Failed to fetch stars history.");
       }
     } catch (error) {
-      setError("Error connecting to the server.", error);
+      setError("Error connecting to the server.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,45 +35,70 @@ const StarsLog = ({ studentId = null }) => {
     fetchLogs();
   }, [studentId]);
 
+  if (loading) {
+    return (
+      <Container className="loading-container">
+        <Spinner animation="grow" variant="warning" />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="error-container">
+        <h3>😢 Oops!</h3>
+        <p>{error}</p>
+      </Container>
+    );
+  }
+
   return (
-    <div className="container d-flex flex-column justify-content-center align-items-center">
-      <div className="text-center mb-4">
-        <h2 className="mb-3">Stars History</h2>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+    <Container fluid className="history-container">
+      <div className="history-header">
+        <h2>✨ Stars History</h2>
+        <p className="history-subtitle">Track all star changes</p>
       </div>
+
       {logs.length > 0 ? (
-        <div style={{ maxWidth: "800px", width: "100%" }}>
-          <Table striped bordered hover className="text-center">
+        <div className="table-container">
+          <Table responsive hover className="history-table">
             <thead>
               <tr>
-                <th></th>
-                <th>Student</th>
-                <th>Change</th>
-                <th>Description</th>
-                <th>Date</th>
+                <th className="number-column">#</th>
+                <th className="student-column">Student</th>
+                <th className="change-column">Change</th>
+                <th className="description-column">Description</th>
+                <th className="date-column">Date</th>
               </tr>
             </thead>
             <tbody>
               {logs.map((log, index) => (
                 <tr key={log.id}>
-                  <td>{index + 1}</td>
-                  <td>{log.student.name}</td>
-                  <td>
-                    {log.stars_change > 0
-                      ? `+${log.stars_change}`
-                      : log.stars_change}
+                  <td className="number-column">{index + 1}</td>
+                  <td className="student-column">{log.student.name}</td>
+                  <td className={`change-column ${log.stars_change > 0 ? 'positive-change' : 'negative-change'}`}>
+                    {log.stars_change > 0 ? (
+                      <span>+{log.stars_change} ⭐</span>
+                    ) : (
+                      <span>{log.stars_change} ⭐</span>
+                    )}
                   </td>
-                  <td>{log.description}</td>
-                  <td>{new Date(log.created_at).toLocaleString()}</td>
+                  <td className="description-column">{log.description}</td>
+                  <td className="date-column">
+                    {new Date(log.created_at).toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </Table>
         </div>
       ) : (
-        <p className="text-center">No history available.</p>
+        <div className="empty-state">
+          <h3>📝 No History Available</h3>
+          <p>Star changes will appear here</p>
+        </div>
       )}
-    </div>
+    </Container>
   );
 };
 

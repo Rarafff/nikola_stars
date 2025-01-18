@@ -107,31 +107,52 @@ class UpdateStudentProfileView(APIView):
 
         try:
             student = Student.objects.get(rfid_id=rfid_id)
+            old_name = student.name
             
             if stars is not None:
                 stars_change = int(stars) - student.stars
-                
                 student.stars = stars
+                
+                description = f"Stars {'increased' if stars_change > 0 else 'decreased'} by {abs(stars_change)} (from {student.stars - stars_change} to {student.stars})"
                 
                 StarsLog.objects.create(
                     student=student,
                     stars_change=stars_change,
-                    description="Stars updated by admin.",
+                    description=description,
                     created_at=datetime.now()
                 )
 
-            if name:
-                student.name = name 
+            if name and name != old_name:
+                student.name = name
+                StarsLog.objects.create(
+                    student=student,
+                    stars_change=0,
+                    description=f"Name changed from '{old_name}' to '{name}'",
+                    created_at=datetime.now()
+                )
+            
             if photo_url:
-                student.photo_url = photo_url 
+                student.photo_url = photo_url
+                StarsLog.objects.create(
+                    student=student,
+                    stars_change=0,
+                    description="Profile photo updated",
+                    created_at=datetime.now()
+                )
             
             student.save()
 
             serializer = StudentSerializer(student)
-            return Response({"message": "Student profile updated successfully!", "student": serializer.data}, status=status.HTTP_200_OK)
+            return Response({
+                "message": "Student profile updated successfully!", 
+                "student": serializer.data
+            }, status=status.HTTP_200_OK)
         
         except Student.DoesNotExist:
-            return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Student not found."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class LoginView(APIView):

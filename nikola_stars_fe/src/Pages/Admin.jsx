@@ -33,7 +33,13 @@ const Admin = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+        <div className="spinner-grow text-warning" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (isAuthenticated === false) {
@@ -41,18 +47,60 @@ const Admin = () => {
   }
 
   return (
-    <div className="container d-flex flex-column justify-content-center align-items-center">
+    <div className="container py-4">
       <Helmet>
         <title>Nikola Stars | Admin</title>
       </Helmet>
-      <h1>Student List</h1>
-      <StudentTable />
-      <button
-        className="btn btn-primary mt-3"
-        onClick={() => navigate("/register-card")}
-      >
-        Register Card
-      </button>
+
+      <div className="text-center mb-5">
+        <h1 style={{
+          background: 'linear-gradient(45deg, #FF6B6B, #FFB84C)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          marginBottom: '20px'
+        }}>
+          Student List 📚
+        </h1>
+      </div>
+
+      <div style={{
+        background: '#fff',
+        borderRadius: '20px',
+        padding: '20px',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+      }}>
+        <StudentTable />
+      </div>
+
+      <div className="text-center mt-4">
+        <button
+          className="btn btn-lg"
+          onClick={() => navigate("/register-card")}
+          style={{
+            background: 'linear-gradient(45deg, #4CAF50, #81C784)',
+            color: 'white',
+            border: 'none',
+            padding: '12px 30px',
+            borderRadius: '25px',
+            boxShadow: '0 4px 15px rgba(76,175,80,0.3)',
+            transition: 'all 0.3s ease',
+            fontSize: '1.1rem',
+            fontWeight: 'bold'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(76,175,80,0.4)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(76,175,80,0.3)';
+          }}
+        >
+          ✨ Register New Card
+        </button>
+      </div>
     </div>
   );
 };

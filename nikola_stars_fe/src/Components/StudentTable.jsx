@@ -99,54 +99,59 @@ function StudentTable() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="table-loader">
+        <div className="spinner-grow text-warning" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="table-error">😢 {error}</div>;
   }
 
   return (
-    <>
-      <Table responsive>
+    <div className="student-table-container">
+      <Table responsive hover className="student-table">
         <thead>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>RFID ID</th>
-            <th>Star</th>
+          <tr className="table-header">
+            <th>No</th>
+            <th>Nama</th>
+            <th>Bintang</th>
+            <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
           {students.map((student, index) => (
             <tr key={student.id}>
-              <td>{index + 1}</td>
-              <td>{student.name}</td>
-              <td>{student.rfid_id}</td>
-              <td>{student.stars || 0}</td>
-              <td>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedStudent(student);
-                    setStarModalShow(true); // Open StarModal
-                  }}
-                >
-                  Modify Stars
-                </Button>
+              <td className="number-cell">{index + 1}</td>
+              <td className="name-cell">{student.name}</td>
+              <td className="star-cell">
+                <span className="star-count">⭐ {student.stars || 0}</span>
               </td>
-              <td>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedStudent(student);
-                    setModifyStudentModalShow(true); // Open ModifyStudentModal
-                  }}
-                >
-                  Modify Student
-                </Button>
+              <td className="action-cell">
+                <div className="action-buttons">
+                  <button
+                    className="btn action-btn add-star-btn small-btn"
+                    onClick={() => {
+                      setSelectedStudent(student);
+                      setStarModalShow(true);
+                    }}
+                  >
+                    + Bintang
+                  </button>
+                  <button
+                    className="btn action-btn modify-btn small-btn"
+                    onClick={() => {
+                      setSelectedStudent(student);
+                      setModifyStudentModalShow(true);
+                    }}
+                  >
+                    Ubah
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
@@ -167,7 +172,7 @@ function StudentTable() {
         onUpdate={handleUpdateStudent}
         onDelete={handleDeleteStudent}
       />
-    </>
+    </div>
   );
 }
 

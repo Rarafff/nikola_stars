@@ -1,3 +1,4 @@
+/* General Styles */
 .logo-nikola {
   width: 10%;
   margin-right: 10px;
@@ -14,6 +15,10 @@
   max-width: 100% !important;
 }
 
+.login-container {
+  margin-top: 20px;
+}
+
 .custom-title {
   color: #ff6b6b !important;
   font-size: 2.5em !important;
@@ -21,6 +26,7 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* SweetAlert Backdrop Animation */
 .swal2-backdrop-show {
   background-size: 100px 100px !important;
   animation: backgroundScroll 20s linear infinite !important;
@@ -32,5 +38,484 @@
   }
   to {
     background-position: 100px 100px;
+  }
+}
+
+/* Navbar Styles */
+.navbar-toggler:focus {
+  box-shadow: none !important;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 107, 107, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.navbar-collapse {
+  transition: all 0.3s ease;
+}
+
+.sticky-top {
+  transition: all 0.3s ease;
+}
+
+.sticky-top.scrolled {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover Effects */
+.nav-link-custom:hover {
+  background: rgba(76, 175, 80, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Leaderboard Table Styles */
+.leaderboard-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.leaderboard-table th {
+  padding: 15px 10px;
+  color: #666;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+}
+
+.leaderboard-table td {
+  padding: 12px 10px;
+  text-align: center;
+  border: none;
+  vertical-align: middle;
+}
+
+.leaderboard-table tr {
+  transition: all 0.3s ease;
+}
+
+.leaderboard-table tbody tr:hover {
+  background: rgba(255, 243, 224, 0.5);
+  transform: translateX(5px);
+}
+
+.top-three {
+  background: rgba(255, 215, 0, 0.1);
+  font-weight: bold;
+}
+
+.star-count {
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #ffb84c #fff3e0;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #fff3e0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ffb84c;
+  border-radius: 10px;
+}
+
+.student-table-container {
+  overflow-x: auto;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.student-table {
+  margin-bottom: 0;
+  min-width: 800px;
+}
+
+.table-header {
+  background: linear-gradient(45deg, #fff3e0, #ffe4e1);
+}
+
+.table-header th {
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+  border: none;
+}
+
+.student-table td {
+  padding: 12px;
+  vertical-align: middle;
+  border: none;
+  text-align: center;
+}
+
+.number-cell {
+  width: 80px;
+}
+
+.name-cell {
+  min-width: 200px;
+}
+
+.star-cell {
+  width: 120px;
+}
+
+.star-count {
+  color: #ffd700;
+  font-size: 1.1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+.action-cell {
+  min-width: 250px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  color: white;
+}
+
+.add-star-btn {
+  background: linear-gradient(45deg, #4caf50, #81c784);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.add-star-btn:hover {
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.modify-btn {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+}
+
+.modify-btn:hover {
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.table-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.table-error {
+  text-align: center;
+  color: #ff6b6b;
+  padding: 20px;
+  font-size: 1.2rem;
+}
+
+/* Custom Scrollbar */
+.student-table-container {
+  scrollbar-width: thin;
+  scrollbar-color: #ffb84c #fff3e0;
+}
+
+.student-table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.student-table-container::-webkit-scrollbar-track {
+  background: #fff3e0;
+  border-radius: 10px;
+}
+
+.student-table-container::-webkit-scrollbar-thumb {
+  background: #ffb84c;
+  border-radius: 10px;
+}
+
+/* Container Styles */
+.history-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.history-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.history-header h2 {
+  background: linear-gradient(45deg, #ff6b6b, #ffb84c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.history-subtitle {
+  color: #666;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+}
+
+/* Table Styles */
+.table-container {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.history-table {
+  min-width: 800px;
+  margin-bottom: 0;
+}
+
+.history-table thead tr {
+  background: linear-gradient(45deg, #fff3e0, #ffe4e1);
+}
+
+.history-table th {
+  padding: 15px;
+  color: #666;
+  font-weight: bold;
+  border: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.history-table td {
+  padding: 12px;
+  vertical-align: middle;
+  border: none;
+  text-align: center;
+}
+
+.history-table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.history-table tbody tr:hover {
+  background: rgba(255, 243, 224, 0.5);
+  transform: translateX(5px);
+}
+
+/* Column Styles */
+.number-column {
+  width: 60px;
+}
+
+.student-column {
+  min-width: 150px;
+}
+
+.change-column {
+  width: 100px;
+}
+
+.description-column {
+  min-width: 200px;
+}
+
+.date-column {
+  min-width: 180px;
+}
+
+/* Star Change Styles */
+.positive-change {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.negative-change {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.error-container {
+  text-align: center;
+  padding: 40px;
+  color: #ff6b6b;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.empty-state h3 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.table-container {
+  scrollbar-width: thin;
+  scrollbar-color: #ffb84c #fff3e0;
+}
+
+.table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #fff3e0;
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #ffb84c;
+  border-radius: 10px;
+}
+
+@media (max-width: 576px) {
+  .history-container {
+    padding: 10px;
+  }
+
+  .table-container {
+    padding: 10px;
+    border-radius: 15px;
+  }
+
+  .history-table th,
+  .history-table td {
+    padding: 8px 6px;
+    font-size: 0.85rem;
+  }
+
+  .student-table {
+    min-width: 600px;
+  }
+
+  .table-header th {
+    font-size: 1rem;
+    padding: 12px 8px;
+  }
+
+  .student-table td {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .star-count {
+    font-size: 1rem;
+  }
+
+  .action-btn {
+    font-size: 0.8rem;
+  }
+
+  .responsive-logo {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .nav-link-custom {
+    padding: 8px 12px !important;
+    font-size: 1rem !important;
+  }
+
+  .btn-custom {
+    padding: 6px 15px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 10px 5px;
+  }
+
+  .top-three .star-count {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  .history-table th,
+  .history-table td {
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .empty-state {
+    padding: 30px;
+  }
+
+  .empty-state h3 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 6px 12px;
+  }
+
+  .history-container {
+    padding: 15px;
+  }
+
+  .table-container {
+    padding: 15px;
   }
 }

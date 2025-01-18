@@ -7,7 +7,7 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class StarsLogSerializer(serializers.ModelSerializer):
-    student = serializers.StringRelatedField()
+    student = StudentSerializer(read_only=True)
     class Meta:
         model = StarsLog
         fields = '__all__'

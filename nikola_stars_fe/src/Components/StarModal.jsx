@@ -5,52 +5,89 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 function StarModal({ show, onHide, student, onConfirm }) {
-  const [stars, setStars] = useState(0); // State to hold the input value
+  const [stars, setStars] = useState(0);
 
   useEffect(() => {
-    // Set initial stars based on the student's current stars
     if (student) {
-      setStars(student.stars || 0); // Default to 0 if no stars
+      setStars(student.stars || 0);
     }
   }, [student]);
 
   const handleConfirm = () => {
-    // Allow both adding and reducing stars
     if (stars !== null) {
-      onConfirm(student?.rfid_id, stars); // Pass the star amount to the onConfirm callback
+      onConfirm(student?.rfid_id, stars);
       onHide();
-    } else {
-      alert("Please enter a valid number of stars.");
     }
   };
 
-  const handleIncrease = () => setStars(stars + 1); // Increase star count
-  const handleDecrease = () => setStars(stars - 1); // Decrease star count
+  const handleIncrease = () => setStars(stars + 1);
+  const handleDecrease = () => stars > 0 && setStars(stars - 1);
+
+  const modalStyle = {
+    content: {
+      background: 'linear-gradient(135deg, #fff3e0 0%, #FFE4E1 100%)',
+      borderRadius: '20px',
+      border: 'none',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+    },
+    header: {
+      background: 'transparent',
+      border: 'none',
+      padding: '20px 20px 0 20px',
+    },
+    title: {
+      color: '#FF6B6B',
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+    },
+    button: {
+      background: 'linear-gradient(45deg, #4CAF50, #81C784)',
+      border: 'none',
+      borderRadius: '25px',
+      padding: '8px 20px',
+      color: 'white',
+      fontWeight: 'bold',
+      boxShadow: '0 4px 15px rgba(76,175,80,0.3)',
+      transition: 'all 0.3s ease',
+    },
+    cancelButton: {
+      background: 'linear-gradient(45deg, #FF6B6B, #FF8E8E)',
+      border: 'none',
+      borderRadius: '25px',
+      padding: '8px 20px',
+      color: 'white',
+      fontWeight: 'bold',
+      boxShadow: '0 4px 15px rgba(255,107,107,0.3)',
+      transition: 'all 0.3s ease',
+    }
+  };
 
   return (
     <Modal
       show={show}
       onHide={onHide}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
       centered
+      contentClassName="rounded-4"
     >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Update Stars for {student?.name}
+      <Modal.Header closeButton style={modalStyle.header}>
+        <Modal.Title style={modalStyle.title}>
+          ⭐ Update {student?.name} Star
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body style={modalStyle.content}>
         <Form>
-          <Form.Group controlId="formStars">
-            <Form.Label>
-              Current stars: <strong>{student?.stars}</strong>
+          <Form.Group controlId="formStars" className="text-center">
+            <Form.Label className="mb-3">
+              <h4>Jumlah bintang saat ini: <strong style={{ color: '#FFD700' }}>⭐ {student?.stars}</strong></h4>
             </Form.Label>
-            <Form.Label className="d-block">
-              Adjust the number of stars:
+            <Form.Label className="d-block mb-3">
+              <h5>Atur jumlah bintang:</h5>
             </Form.Label>
-            <InputGroup>
-              <Button variant="outline-secondary" onClick={handleDecrease}>
+            <InputGroup className="w-50 mx-auto mb-3">
+              <Button 
+                style={{...modalStyle.button, borderRadius: '20px 0 0 20px'}}
+                onClick={handleDecrease}
+              >
                 -
               </Button>
               <Form.Control
@@ -59,23 +96,24 @@ function StarModal({ show, onHide, student, onConfirm }) {
                 onChange={(e) => setStars(parseInt(e.target.value, 10) || 0)}
                 min="0"
                 className="text-center"
+                style={{ borderColor: '#4CAF50' }}
               />
-              <Button variant="outline-secondary" onClick={handleIncrease}>
+              <Button 
+                style={{...modalStyle.button, borderRadius: '0 20px 20px 0'}}
+                onClick={handleIncrease}
+              >
                 +
               </Button>
             </InputGroup>
-            <Form.Text className="text-muted">
-              Use the + and - buttons to adjust stars.
-            </Form.Text>
           </Form.Group>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Cancel
+      <Modal.Footer style={{ border: 'none', padding: '20px' }}>
+        <Button style={modalStyle.cancelButton} onClick={onHide}>
+          Batal
         </Button>
-        <Button variant="primary" onClick={handleConfirm}>
-          Confirm
+        <Button style={modalStyle.button} onClick={handleConfirm}>
+          Simpan
         </Button>
       </Modal.Footer>
     </Modal>
