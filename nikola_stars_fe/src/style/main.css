@@ -1,0 +1,36 @@
+.logo-nikola {
+  width: 10%;
+  margin-right: 10px;
+}
+
+.full-screen-modal {
+  z-index: 9999;
+}
+
+.rounded-popup {
+  border-radius: 20px !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3) !important;
+  padding: 2rem !important;
+  max-width: 100% !important;
+}
+
+.custom-title {
+  color: #ff6b6b !important;
+  font-size: 2.5em !important;
+  font-weight: bold !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.swal2-backdrop-show {
+  background-size: 100px 100px !important;
+  animation: backgroundScroll 20s linear infinite !important;
+}
+
+@keyframes backgroundScroll {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100px 100px;
+  }
+}
