@@ -134,7 +134,18 @@ const RegisterCard = () => {
       <Helmet>
         <title>Nikola Stars | Register</title>
       </Helmet>
-      <h1>Register RFID Card</h1>
+      <h1
+        style={{
+          background: "linear-gradient(45deg, #FF6B6B, #FFB84C)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          fontSize: "2.5rem",
+          fontWeight: "bold",
+          marginBottom: "20px",
+        }}
+      >
+        Register Card📚
+      </h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="rfid" className="form-label">
@@ -192,8 +203,31 @@ const RegisterCard = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary" disabled={rfidExists}>
-          Register Card
+        <button
+          type="submit"
+          className="btn btn-primary"
+          style={{
+            background: "linear-gradient(45deg, #4CAF50, #81C784)",
+            color: "white",
+            border: "none",
+            padding: "12px 30px",
+            borderRadius: "25px",
+            boxShadow: "0 4px 15px rgba(76,175,80,0.3)",
+            transition: "all 0.3s ease",
+            fontSize: "1.1rem",
+            fontWeight: "bold",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 6px 20px rgba(76,175,80,0.4)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 4px 15px rgba(76,175,80,0.3)";
+          }}
+          disabled={rfidExists}
+        >
+          ✨ Register Card
         </button>
       </form>
 

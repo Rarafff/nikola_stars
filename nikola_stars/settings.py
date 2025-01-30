@@ -30,6 +30,8 @@ ALLOWED_HOSTS = [
     'localhost',
     'localhost:5173',
     '192.168.5.200', 
+    '192.168.6.60'
+    '*'
 ] 
 
 # Application definition
@@ -147,7 +149,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:8000",
     "http://192.168.5.200:8000",
+    "http://192.168.6.60",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Hanya untuk development
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [

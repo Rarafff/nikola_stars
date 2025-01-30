@@ -1,4 +1,7 @@
-/* General Styles */
+* {
+  font-family: "Press Start 2P", serif;
+}
+
 .logo-nikola {
   width: 10%;
   margin-right: 10px;
@@ -118,7 +121,7 @@
 /* Custom Scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #ffb84c #fff3e0;
+  scrollbar-color: #ff8548 #fff3e0;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -409,6 +412,109 @@
 .table-container::-webkit-scrollbar-thumb {
   background: #ffb84c;
   border-radius: 10px;
+}
+
+.history-container {
+  padding: 20px 15px;
+}
+
+.header-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.main-title {
+  background: linear-gradient(45deg, #ff6b6b, #ffb84c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: bold;
+  margin-bottom: 15px;
+  padding: 0 10px;
+}
+
+.sub-title {
+  color: #4caf50;
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-weight: bold;
+}
+
+.search-container {
+  margin-bottom: 20px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-input {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 2px solid #e0e0e0;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #ffb84c;
+  box-shadow: 0 0 0 0.2rem rgba(255, 184, 76, 0.25);
+  outline: none;
+}
+
+.table-container {
+  background: #fff;
+  border-radius: 20px;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.history-table {
+  margin-bottom: 0;
+}
+
+.table-header {
+  background: linear-gradient(45deg, #fff3e0, #ffe4e1);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.index-cell {
+  width: 80px;
+  text-align: center;
+  color: #666;
+}
+
+.star-cell {
+  text-align: center;
+}
+
+.loading-container {
+  text-align: center;
+  padding-top: 5rem;
+}
+
+.error-container {
+  text-align: center;
+  padding-top: 5rem;
+}
+
+.error-message {
+  color: #ff6b6b;
+}
+
+@media (max-width: 768px) {
+  .history-container {
+    padding: 10px;
+  }
+
+  .table-container {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .search-container {
+    margin-bottom: 15px;
+  }
 }
 
 @media (max-width: 576px) {

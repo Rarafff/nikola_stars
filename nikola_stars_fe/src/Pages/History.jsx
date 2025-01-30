@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Table, Container, Spinner } from "react-bootstrap";
+import { Table, Container, Spinner, Form } from "react-bootstrap";
 
 const StarsLog = ({ studentId = null }) => {
   const [logs, setLogs] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchLogs = async () => {
     try {
@@ -35,6 +36,10 @@ const StarsLog = ({ studentId = null }) => {
     fetchLogs();
   }, [studentId]);
 
+  const filteredLogs = logs.filter((log) =>
+    log.student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) {
     return (
       <Container className="loading-container">
@@ -54,12 +59,22 @@ const StarsLog = ({ studentId = null }) => {
 
   return (
     <Container fluid className="history-container">
-      <div className="history-header">
-        <h2>✨ Stars History</h2>
-        <p className="history-subtitle">Track all star changes</p>
+      <div className="header-container">
+        <h1 className="main-title">Star History 📝</h1>
+        <h2 className="sub-title">Track Your Star Journey! ⭐</h2>
       </div>
 
-      {logs.length > 0 ? (
+      <div className="search-container">
+        <Form.Control
+          type="text"
+          placeholder="Search by name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
+      {filteredLogs.length > 0 ? (
         <div className="table-container">
           <Table responsive hover className="history-table">
             <thead>
@@ -72,7 +87,7 @@ const StarsLog = ({ studentId = null }) => {
               </tr>
             </thead>
             <tbody>
-              {logs.map((log, index) => (
+              {filteredLogs.map((log, index) => (
                 <tr key={log.id}>
                   <td className="number-column">{index + 1}</td>
                   <td className="student-column">{log.student.name}</td>

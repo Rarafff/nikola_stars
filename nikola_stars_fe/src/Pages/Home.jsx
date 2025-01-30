@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import StudentProfileModal from "../Components/StudentModal";
 import Leaderboard from "./Leaderboard";
 import { Helmet } from "react-helmet";
+import RefactorLeaderboard from "./RefactorLeaderboard";
 
 const Home = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -55,7 +56,7 @@ const Home = () => {
       <Helmet>
         <title>Nikola Tracker | Home</title>
       </Helmet>
-      {!modalShow && <Leaderboard />}
+      {!modalShow && <RefactorLeaderboard />}
       <StudentProfileModal
         rfid={rfid}
         show={modalShow}
