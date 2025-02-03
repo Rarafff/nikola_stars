@@ -1,26 +1,51 @@
 import Sidebar from "../Components/Sidebar";
 import yellowList from "../assets/yellow-list.svg";
 import star from "../assets/star.svg";
+import { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
 
 const RefactorLeaderboard = () => {
-  const dummyStudents = [
-    { id: 1, name: "Alex", stars: 50 },
-    { id: 2, name: "Andreas", stars: 45 },
-    { id: 3, name: "Vincent", stars: 40 },
-    { id: 4, name: "Alvin", stars: 35 },
-    { id: 5, name: "Tasya", stars: 30 },
-    { id: 6, name: "Dita", stars: 25 },
-    { id: 7, name: "Jesse", stars: 20 },
-    { id: 8, name: "Nanda", stars: 15 },
-    { id: 9, name: "Devina", stars: 10 },
-  ];
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("http://server.nikolaacademy.com:8000/api/students/")
+      .then((response) => response.json())
+      .then((data) => {
+        const sortedStudents = data.sort((a, b) => b.stars - a.stars);
+        setStudents(sortedStudents);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError("Failed to fetch data", err);
+        setLoading(false);
+      });
+  }, []);
 
   const yellowLines = Array(8).fill(null);
 
-  // Tambahkan fungsi untuk memformat nama
+  if (loading) {
+    return (
+      <Container className="text-center py-5">
+        <div className="spinner-grow text-warning" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="text-center py-5">
+        <h2 style={{ color: "#FF6B6B" }}>😢 {error}</h2>
+      </Container>
+    );
+  }
+
   const formatName = (name) => {
-    if (!name) return '';
-    return name.charAt(0) + '*'.repeat(name.length - 1);
+    if (!name) return "";
+    return name.charAt(0) + "*".repeat(name.length - 1);
   };
 
   return (
@@ -48,7 +73,7 @@ const RefactorLeaderboard = () => {
           </div>
           <div style={styles.cardHeader}>Leaderboard</div>
           <div style={styles.starsList} className="stars-list">
-            {dummyStudents.map((student, index) => (
+            {students.map((student, index) => (
               <div key={student.id} style={styles.starItem}>
                 <span style={styles.number}>{`${index + 1}.`}</span>
                 <div style={styles.studentInfo}>
@@ -252,7 +277,7 @@ const styles = {
     fontSize: "1.2rem",
     color: "#FFFFFF",
     fontFamily: '"Press Start 2P", cursive',
-  }
+  },
 };
 
 export default RefactorLeaderboard;

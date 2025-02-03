@@ -4,18 +4,33 @@ import nikolaStarTracker from "../assets/nikola-startracker.svg";
 import historyImage from "../assets/history-button.svg";
 import newCardImage from "../assets/new-card.svg";
 import logoutImage from "../assets/log-out.svg";
+import Swal from "sweetalert2";
 
 const RefactorNavbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    window.location.href = "/";
+    Swal.fire({
+      title: "Logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FDBA00",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("access_token");
+        window.location.href = "/login";
+        Swal.fire({
+          title: "OK!",
+          icon: "success",
+        });
+      }
+    });
   };
 
   return (
     <nav style={styles.navbar}>
-      {/* Left Section - Orange */}
       <div style={styles.leftSection}>
         <img
           src={nikolaStarTracker}
@@ -25,12 +40,10 @@ const RefactorNavbar = () => {
         />
       </div>
 
-      {/* Middle Section - Teal */}
       <div style={styles.middleSection}>
         <img src={logo} alt="Nikola" style={styles.middleLogo} />
       </div>
 
-      {/* Right Section - Yellow */}
       <div style={styles.rightSection}>
         <button style={styles.navButton} onClick={() => navigate("/history")}>
           <img

@@ -1,15 +1,9 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./style/main.css";
 import "./style/style.css";
-// import MainNavbar from "./Components/Navbar";
 import Home from "./Pages/Home";
-import Admin from "./Pages/Admin";
-import Login from "./Pages/Login";
-import RegisterCard from "./Pages/RegisterCard";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
-import History from "./Pages/History";
 import RefactorNavbar from "./Components/RefactorNavbar";
 import Sidebar from "./Components/Sidebar";
 import RefactorAdmin from "./Pages/RefactorAdmin";
@@ -23,7 +17,6 @@ function App() {
 
     if (token) {
       const tokenExpiryTimer = setInterval(() => {
-        console.log("Token expired, logging out...");
         localStorage.removeItem("access_token");
       }, 3600000);
 
@@ -52,7 +45,6 @@ function App() {
           <Route path="/admin" element={<RefactorAdmin />} />
           <Route path="/history" element={<RefactorHistory />} />
           <Route path="/register-card" element={<RefactorRegisterCard />} />
-          <Route path="/test" element={<RefactorRegisterCard />} />
         </Routes>
       </BrowserRouter>
     </div>

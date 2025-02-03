@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
-import StudentProfileModal from "../Components/StudentModal";
-import Leaderboard from "./Leaderboard";
 import { Helmet } from "react-helmet";
 import RefactorLeaderboard from "./RefactorLeaderboard";
+import RefactorStudentModal from "../Components/RefactorStudentModal";
 
 const Home = () => {
   const [modalShow, setModalShow] = useState(false);
   const [rfid, setRfid] = useState(null);
+  
 
   const fetchLatestRFID = async () => {
     try {
       const response = await fetch(
-        "http://192.168.5.200:8000/api/latest-rfid/"
+        "http://server.nikolaacademy.com:8000/api/latest-rfid/"
       );
       const data = await response.json();
       if (data.uid) {
         setRfid(data.uid);
-        setModalShow(true); // Show modal when RFID is detected
+        setModalShow(true); 
       }
     } catch (error) {
       console.error("Error fetching latest RFID UID:", error);
@@ -25,7 +25,7 @@ const Home = () => {
 
   const clearRFID = async () => {
     try {
-      await fetch("http://192.168.5.200:8000/api/clear-rfid/", {
+      await fetch("http://server.nikolaacademy.com:8000/api/clear-rfid/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const Home = () => {
         <title>Nikola Tracker | Home</title>
       </Helmet>
       {!modalShow && <RefactorLeaderboard />}
-      <StudentProfileModal
+      <RefactorStudentModal
         rfid={rfid}
         show={modalShow}
         onClose={handleCloseModal}

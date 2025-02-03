@@ -1,46 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import yellowList from "../assets/yellow-list.svg";
 
 const RefactorLogin = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    const loginData = {
+      username: username,
+      password: password,
+    };
+
     try {
-      const response = await fetch("http://192.168.5.200:8000/api/login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://server.nikolaacademy.com:8000/api/login/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        }
+      );
+
+      const data = await response.json();
 
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.token);
+        const expiryTime = Date.now() + 3600000;
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("token_expiry", expiryTime);
         navigate("/admin");
       } else {
-        alert("Login failed. Please check your credentials.");
+        setError(data.error || "Invalid username or password");
       }
     } catch (error) {
-      console.error("Login error:", error);
-      alert("An error occurred during login.");
+      setError("Failed to connect to the server");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const tokenExpiry = localStorage.getItem("token_expiry");
+    if (tokenExpiry && Date.now() > tokenExpiry) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("token_expiry");
+      navigate("/login");
+    }
+  }, []);
 
   const yellowLines = Array(8).fill(null);
 
@@ -67,14 +83,14 @@ const RefactorLogin = () => {
           </div>
           <div style={styles.cardHeader}></div>
           <div style={styles.formContainer}>
-            <form onSubmit={handleSubmit} style={styles.form}>
+            <form onSubmit={handleLogin} style={styles.form}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Username</label>
                 <input
                   type="text"
                   name="username"
-                  value={formData.username}
-                  onChange={handleChange}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   style={styles.input}
                   placeholder="....."
                 />
@@ -85,8 +101,8 @@ const RefactorLogin = () => {
                 <input
                   type="password"
                   name="password"
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   style={styles.input}
                   placeholder="....."
                 />

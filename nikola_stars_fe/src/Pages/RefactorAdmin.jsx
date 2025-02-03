@@ -8,64 +8,63 @@ import yellowList from "../assets/yellow-list.svg";
 import star from "../assets/star.svg";
 
 const RefactorAdmin = () => {
+  const [students, setStudents] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const dummyStudents = [
-    { id: 1, name: "Winly", stars: 10 },
-    { id: 2, name: "Jesse", stars: 60 },
-    { id: 3, name: "Dian", stars: 5 },
-    { id: 4, name: "Alvin", stars: 35 },
-    { id: 5, name: "Michael", stars: 25 },
-    { id: 6, name: "Sarah", stars: 42 },
-    { id: 7, name: "Kevin", stars: 15 },
-    { id: 8, name: "Rachel", stars: 30 },
-  ];
+  useEffect(() => {
+    fetch("http://server.nikolaacademy.com:8000/api/students/", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setStudents(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setError("Failed to fetch data: " + err.message);
+        setIsLoading(false);
+      });
+  }, []);
 
-  // useEffect(() => {
-  //   const checkAuth = () => {
-  //     const token = localStorage.getItem("access_token");
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("access_token");
 
-  //     if (token) {
-  //       try {
-  //         if (token.length > 0) {
-  //           setIsAuthenticated(true);
-  //         } else {
-  //           setIsAuthenticated(false);
-  //         }
-  //       } catch (error) {
-  //         console.error("Token validation error:", error);
-  //         setIsAuthenticated(false);
-  //       }
-  //     } else {
-  //       setIsAuthenticated(false);
-  //     }
-  //     setIsLoading(false);
-  //   };
+      if (token && token.length > 0) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+      setIsLoading(false);
+    };
 
-  //   checkAuth();
-  // }, []);
+    checkAuth();
+  }, []);
 
-  // if (isLoading) {
-  //   return (
-  //     <div
-  //       className="d-flex justify-content-center align-items-center"
-  //       style={{ minHeight: "100vh" }}
-  //     >
-  //       <div className="spinner-grow text-warning" role="status">
-  //         <span className="visually-hidden">Loading...</span>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "100vh" }}
+      >
+        <div className="spinner-grow text-warning" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
-  // if (isAuthenticated === false) {
-  //   return <Navigate to="/login" />;
-  // }
+  if (isAuthenticated === false) {
+    return <Navigate to="/login" />;
+  }
 
   const handleOpenModal = (student) => {
     setSelectedStudent(student);
@@ -87,14 +86,74 @@ const RefactorAdmin = () => {
     setIsModifyModalOpen(false);
   };
 
-  const handleSaveModify = (updatedData) => {
-    // Update local state atau refresh data
-    // Bisa tambahkan fetch untuk get data terbaru
+  const handleUpdateStudent = (studentId, updatedData) => {
+    fetch(
+      `http://server.nikolaacademy.com:8000/api/update-student/${studentId}/`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        body: JSON.stringify(updatedData),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          alert(data.message);
+          setStudents((prevStudents) =>
+            prevStudents.map((student) =>
+              student.rfid_id === studentId
+                ? { ...student, ...updatedData }
+                : student
+            )
+          );
+        } else {
+          console.error(data.error);
+        }
+      })
+      .catch((error) => console.error("Error updating student:", error));
   };
 
-  const handleSaveStars = (newStarCount) => {
-    // Update local state atau refresh data
-    // Bisa tambahkan fetch untuk get data terbaru
+  const handleAddStar = (studentId, newStarsValue) => {
+    fetch(
+      `http://server.nikolaacademy.com:8000/api/update-student/${studentId}/`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        body: JSON.stringify({ stars: newStarsValue }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          alert(data.message);
+          setStudents((prevStudents) =>
+            prevStudents.map((student) =>
+              student.rfid_id === studentId
+                ? { ...student, stars: newStarsValue }
+                : student
+            )
+          );
+        } else {
+          console.error(data.error);
+        }
+      })
+      .catch((error) => console.error("Error updating stars:", error));
+  };
+
+  if (error) {
+    return <div className="table-error">😢 {error}</div>;
+  }
+
+  const handleDeleteStudent = (rfid_id) => {
+    setStudents((prevStudents) =>
+      prevStudents.filter((student) => student.rfid_id !== rfid_id)
+    );
   };
 
   const yellowLines = Array(10).fill(null);
@@ -128,7 +187,12 @@ const RefactorAdmin = () => {
                   <th style={styles.th}>No</th>
                   <th style={styles.th}>Name</th>
                   <th style={styles.th}>STARS</th>
-                  <th style={styles.th} className="dflex align-align-items-center justify-content-center">Editor</th>
+                  <th
+                    style={styles.th}
+                    className="dflex align-align-items-center justify-content-center"
+                  >
+                    Editor
+                  </th>
                   <th style={styles.th}></th>
                 </tr>
               </thead>
@@ -136,7 +200,7 @@ const RefactorAdmin = () => {
             <div style={styles.tableBody}>
               <table style={styles.table}>
                 <tbody>
-                  {dummyStudents.map((student, index) => (
+                  {students.map((student, index) => (
                     <tr key={student.id} style={styles.tr}>
                       <td style={styles.td}>{`${index + 1}.`}</td>
                       <td style={styles.td}>{student.name}</td>
@@ -151,7 +215,10 @@ const RefactorAdmin = () => {
                       <td style={styles.td}>
                         <button
                           style={styles.addButton}
-                          onClick={() => handleOpenModal(student)}
+                          onClick={() => {
+                            setSelectedStudent(student);
+                            handleOpenModal(student);
+                          }}
                         >
                           + Bintang
                         </button>
@@ -159,7 +226,10 @@ const RefactorAdmin = () => {
                       <td style={styles.td}>
                         <button
                           style={styles.editButton}
-                          onClick={() => handleOpenModifyModal(student)}
+                          onClick={() => {
+                            setSelectedStudent(student);
+                            handleOpenModifyModal(student);
+                          }}
                         >
                           Ubah
                         </button>
@@ -176,13 +246,14 @@ const RefactorAdmin = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         student={selectedStudent}
-        onSave={handleSaveStars}
+        onSave={handleAddStar}
       />
       <RefactorModifyStudentModal
         isOpen={isModifyModalOpen}
         onClose={handleCloseModifyModal}
         student={selectedStudent}
-        onSave={handleSaveModify}
+        onSave={handleUpdateStudent}
+        onDelete={handleDeleteStudent}
       />
     </div>
   );
@@ -197,7 +268,7 @@ const styles = {
     overflow: "hidden",
   },
   starIcon: {
-    width: "25px", // Adjust size of the star icon
+    width: "25px",
     height: "25px",
   },
   content: {
@@ -305,6 +376,11 @@ const styles = {
     textAlign: "left",
     fontSize: "1.2rem",
     color: "#FFFFFF",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "130px",
+    borderBottom: "2px dashed #FFB700",
     textShadow: `
       2px 2px 0 #FDBA00,
       -2px -2px 0 #FDBA00,
@@ -326,7 +402,6 @@ const styles = {
       0 0 20px rgba(255, 217, 61, 0.5),
       0 0 30px rgba(255, 217, 61, 0.3)
     `,
-    borderBottom: "2px dashed #FFB700",
   },
   starsList: {
     maxHeight: "calc(100vh - 300px)",

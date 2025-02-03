@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const RefactorStarModal = ({ isOpen, onClose, student, onSave }) => {
-  const [starCount, setStarCount] = useState(student?.stars || 0);
+  const [starCount, setStarCount] = useState(0);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -9,22 +9,20 @@ const RefactorStarModal = ({ isOpen, onClose, student, onSave }) => {
     }
   };
 
-  if (!isOpen) return null;
-
-  const handleIncrement = () => {
-    setStarCount((prev) => prev + 1);
-  };
-
-  const handleDecrement = () => {
-    if (starCount > 0) {
-      setStarCount((prev) => prev - 1);
+  useEffect(() => {
+    if (student) {
+      setStarCount(student.stars || 0);
     }
-  };
+  }, [student]);
+
+  const handleIncrement = () => setStarCount((prev) => prev + 1);
+  const handleDecrement = () =>
+    setStarCount((prev) => (prev > 0 ? prev - 1 : 0));
 
   const handleSave = async () => {
     try {
       const response = await fetch(
-        `http://192.168.5.200:8000/api/students/${student.id}/`,
+        `http://server.nikolaacademy.com:8000/api/update-student/${student.rfid_id}/`,
         {
           method: "PUT",
           headers: {
@@ -38,7 +36,7 @@ const RefactorStarModal = ({ isOpen, onClose, student, onSave }) => {
       );
 
       if (response.ok) {
-        onSave(starCount);
+        onSave(student?.rfid_id, starCount);
         onClose();
       }
     } catch (error) {
@@ -54,7 +52,7 @@ const RefactorStarModal = ({ isOpen, onClose, student, onSave }) => {
         <h2 style={styles.title}>Update {student?.name} STAR</h2>
 
         <div style={styles.starDisplay}>
-          <span style={styles.starCount}>{starCount}⭐</span>
+          <span style={styles.starCount}>{student?.stars}⭐</span>
         </div>
 
         <div style={styles.counterContainer}>
@@ -63,7 +61,12 @@ const RefactorStarModal = ({ isOpen, onClose, student, onSave }) => {
             <button style={styles.leftCounterButton} onClick={handleDecrement}>
               -
             </button>
-            <span style={styles.counterValue}>{starCount}</span>
+            <span
+              style={styles.counterValue}
+              onChange={(e) => setStarCount(parseInt(e.target.value, 10) || 0)}
+            >
+              {starCount}
+            </span>
             <button style={styles.rightCounterButton} onClick={handleIncrement}>
               +
             </button>

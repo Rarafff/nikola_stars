@@ -1,51 +1,141 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import yellowList from "../assets/yellow-list.svg";
 import registerIcon from "../assets/register-icon.svg";
+import { useNavigate } from "react-router-dom";
+
+import { Helmet } from "react-helmet";
+import Swal from "sweetalert2";
 
 const RefactorRegisterCard = () => {
-  const [formData, setFormData] = useState({
-    rfid_uid: "Waiting for RFID card...",
-    name: "",
-    stars: 0,
-  });
+  const [rfid, setRfid] = useState("Waiting for RFID Card...");
+  const [name, setName] = useState("");
+  const [stars, setStars] = useState(0);
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [message, setMessage] = useState("");
+  const [rfidExists, setRfidExists] = useState(false);
 
-  const yellowLines = Array(8).fill(null);
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const checkIfRFIDExists = async (uid) => {
+    if (!uid) return;
+
+    try {
+      const response = await fetch(
+        `http://server.nikolaacademy.com:8000/api/student/${uid}/`
+      );
+      if (response.status === 200) {
+        setRfidExists(true);
+        setMessage("This RFID UID is already registered.");
+      } else if (response.status === 404) {
+        setRfidExists(false);
+        setMessage("This RFID UID is available for registration.");
+      } else {
+        setRfidExists(false);
+        setMessage("Error checking RFID status.");
+      }
+    } catch (error) {
+      console.error("Error checking RFID UID:", error);
+      setMessage("Error checking RFID UID.");
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const fetchLatestRFID = async () => {
     try {
-      const response = await fetch("http://192.168.5.200:8000/api/students/", {
+      const response = await fetch(
+        "http://server.nikolaacademy.com:8000/api/latest-rfid/"
+      );
+      if (response.status === 200) {
+        const data = await response.json();
+        if (data.uid) {
+          setRfid(data.uid);
+          checkIfRFIDExists(data.uid);
+        }
+      } else if (response.status === 204) {
+        setRfid("Waiting for RFID Card...");
+        setMessage("No RFID card detected.");
+      }
+    } catch (error) {
+      console.error("Error fetching RFID:", error);
+    }
+  };
+
+  const clearRFID = async () => {
+    try {
+      await fetch("http://server.nikolaacademy.com:8000/api/clear-rfid/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
-        body: JSON.stringify(formData),
       });
+    } catch (error) {
+      console.error("Error clearing RFID:", error);
+    }
+  };
 
+  useEffect(() => {
+    const interval = setInterval(fetchLatestRFID, 2000);
+
+    return () => {
+      clearInterval(interval);
+      clearRFID();
+    };
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!rfid || !name) {
+      setMessage("Please fill in all fields.");
+      return;
+    }
+
+    if (rfidExists) {
+      setMessage("This RFID UID is already registered.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://server.nikolaacademy.com:8000/api/register-card/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+          body: JSON.stringify({
+            rfid_id: rfid,
+            name: name,
+            stars: stars,
+            photo_url: photoUrl,
+          }),
+        }
+      );
+
+      const data = await response.json();
       if (response.ok) {
-        alert("Card registered successfully!");
-        setFormData({
-          rfid_uid: "Waiting for RFID card...",
-          name: "",
-          stars: 0,
-        });
+        Swal.fire("Card registered successfully!");
+        setRfid("");
+        setName("");
+        setStars(0);
+        setPhotoUrl("");
+        clearRFID();
+        navigate("/");
+      } else {
+        setMessage(data.error || "An error occurred");
       }
     } catch (error) {
-      console.error("Error registering card:", error);
-      alert("Failed to register card");
+      setMessage("Network error occurred");
+      console.error("Error:", error);
     }
   };
 
   return (
     <div style={styles.container}>
+      <Helmet>
+        <title>Nikola Stars | Register</title>
+      </Helmet>
       <div style={styles.content}>
         <h2 style={styles.title}>
           REGISTER NEW CARD{" "}
@@ -53,7 +143,7 @@ const RefactorRegisterCard = () => {
         </h2>
         <div style={styles.registerCard}>
           <div style={styles.yellowListContainer}>
-            {yellowLines.map((_, index) => (
+            {[...Array(8)].map((_, index) => (
               <img
                 key={index}
                 src={yellowList}
@@ -62,19 +152,17 @@ const RefactorRegisterCard = () => {
               />
             ))}
           </div>
-          <div style={styles.cardHeader}>
-          </div>
+          <div style={styles.cardHeader}></div>
           <div style={styles.formContainer}>
             <form onSubmit={handleSubmit} style={styles.form}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>RFID UID</label>
                 <input
                   type="text"
-                  name="rfid_uid"
-                  value={formData.rfid_uid}
-                  onChange={handleChange}
-                  style={styles.input}
+                  value={rfid}
                   disabled
+                  style={styles.input}
+                  readOnly
                 />
               </div>
 
@@ -82,11 +170,10 @@ const RefactorRegisterCard = () => {
                 <label style={styles.label}>Name</label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  value={name}
+                  placeholder="Your name here..."
+                  onChange={(e) => setName(e.target.value)}
                   style={styles.input}
-                  placeholder="....."
                 />
               </div>
 
@@ -94,17 +181,33 @@ const RefactorRegisterCard = () => {
                 <label style={styles.label}>STARS</label>
                 <input
                   type="number"
-                  name="stars"
-                  value={formData.stars}
-                  onChange={handleChange}
+                  value={stars}
+                  onChange={(e) => setStars(Number(e.target.value))}
                   style={styles.input}
                   min="0"
                 />
               </div>
-
-              <button type="submit" style={styles.registerButton}>
-                Register Card
-              </button>
+              <div className="alert-button-container">
+                {message && (
+                  <div
+                    className={`alert-custom ${
+                      rfidExists ? "alert-danger" : "alert-info"
+                    }`}
+                  >
+                    {message}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  style={{
+                    ...styles.registerButton,
+                    ...(rfidExists ? styles.disabledButton : {}),
+                  }}
+                  disabled={rfidExists}
+                >
+                  Register Card
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -234,9 +337,6 @@ const styles = {
     fontSize: "0.9rem",
     color: "#FF8551",
     outline: "none",
-    "&::placeholder": {
-      color: "#FFB69E",
-    },
     "&:disabled": {
       backgroundColor: "#f5f5f5",
       cursor: "not-allowed",
@@ -250,13 +350,19 @@ const styles = {
     padding: "12px",
     cursor: "pointer",
     fontFamily: '"Press Start 2P", cursive',
-    fontSize: "0.9rem",
-    marginTop: "15px",
+    fontSize: "0.7rem",
     marginLeft: "auto",
     minWidth: "200px",
     transition: "transform 0.2s",
     "&:hover": {
       transform: "scale(1.02)",
+    },
+  },
+  disabledButton: {
+    backgroundColor: "#ccc",
+    cursor: "not-allowed",
+    "&:hover": {
+      transform: "none",
     },
   },
 };
